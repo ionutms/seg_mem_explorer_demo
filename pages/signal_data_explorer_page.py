@@ -150,10 +150,31 @@ data_sets_selection_row = dbc.Row(id=f'{module_name}_data_sets_row', children=[
         f'{module_name}_data_sets', "Select which data sets to explore", [1])])
 
 radioitems_row = dbc.Row([
-    dbc.Col([dbc.Row(id="radioitems_row")], xs=12, md=10),
-    dbc.Col([dbc.Row([dcu.create_labeled_button(
-        f"{module_name}_view_data", "No data to view",
-        "View selected data", 12)])], xs=12, md=2)])
+    dbc.Col([dbc.Row(id="radioitems_row")], xs=12, md=9),
+
+    dbc.Col([dbc.Row([
+        dbc.Col([dbc.Card(id="group_legend_card", children=[
+            dbc.Label("Group Legend", className=styles.CENTER_CLASS_NAME),
+            dbc.Switch(
+                id="legend_group_switch", value=False,
+                className=styles.CENTER_CLASS_NAME)
+        ], body=True, style={
+            "border": "1px dashed", "border-radius": "10px", "display": "none",
+            "padding": "1px", "background-color": "transparent"}),
+            html.Br(),
+        ], xs=12, md=6),
+
+        dbc.Col([dbc.Card([
+            dbc.Button(
+                "View", id="view_data_button",
+                className=styles.CENTER_CLASS_NAME)
+        ], body=True, style={
+            "border": "none", "background-color": "transparent",
+            "padding-top": "10px", "padding-bottom": "10px"})
+        ], xs=12, md=6)
+    ])
+    ], xs=12, md=3)
+])
 
 
 selection_row = dbc.Row([dbc.Col([dcc.Loading([
@@ -187,6 +208,21 @@ dcu.callback_update_store_at_upload(
 
 
 dcu.callbacks_radioitems(f'{module_name}_data_sets', "radioitems_row")
+
+
+@callback(
+    Output('group_legend_card', 'style'),
+    Input(f"{module_name}_data_sets_range_slider", 'value'),
+    State('group_legend_card', 'style'),
+    prevent_initial_call=True
+)
+def set_group_legend_card_style(
+    slider_value,
+    style_state
+):
+    """TODO"""
+    style_state['display'] = '' if len(slider_value) > 2 else 'none'
+    return style_state
 
 
 @callback(
@@ -276,7 +312,7 @@ def toggle_file_selection_visibility(
 @callback(
     Output(f"{module_name}_data_graph", 'figure'),
     Output("graph_column", 'style'),
-    Input(f"{module_name}_view_data_button", "n_clicks"),
+    Input("view_data_button", "n_clicks"),
     Input('theme_switch_value_store', 'data'),
     State(f'{module_name}_upload', 'contents'),
     State(f'{module_name}_upload', 'filename'),
