@@ -680,21 +680,39 @@ def callbacks_radioitems(
                         options=options, value=options[0]["value"],
                         id={'type': 'radioitems', 'index': index},
                         className=styles.CENTER_CLASS_NAME, inline=True),
-                ], xs=9, md=9),
+                ], xs=10, md=10),
                 dbc.Col([
                     dbc.Label(
-                        'Left', id={'type': 'label side', 'index': index},
-                        className=styles.CENTER_CLASS_NAME),
+                        'Left', id={'type': 'label side', 'index': index}),
                     dbc.Switch(
-                        id={'type': 'switch', 'index': index}, value=False,
-                        className=styles.CENTER_CLASS_NAME),
-                ], xs=3, md=3)])
-            ], body=False, style={
+                        id={'type': 'switch', 'index': index},
+                        value=False, className="d-flex justify-content-center")
+                ], xs=2, md=2, className=styles.FLEX_CENTER_COLUMN)
+            ])], body=True, style={
                 "border": "1px dashed", "border-radius": "10px",
-                "padding": "5px", "background-color": "transparent"}),
+                "padding": "1px", "background-color": "transparent"}),
                 html.Br()], xs=12, md=4))
 
         return columns
+
+    @callback(
+        Output('filtering_store', 'data', allow_duplicate=True),
+        Input("legend_group_switch", 'value'),
+        Input('filtering_store', 'data'),
+        prevent_initial_call=True
+    )
+    def update_filtering_store_2(
+        legend_group_switch: bool,
+        filtering: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        TODO
+        """
+        try:
+            filtering.update({"legend_group": legend_group_switch})
+            return filtering
+        except (KeyError, IndexError):
+            return filtering
 
     @callback(
         Output('filtering_store', 'data', allow_duplicate=True),
