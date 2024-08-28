@@ -37,8 +37,8 @@ Feel free to explore the features and functionality of the application directly 
 
 1. Clone the repository:
    ```
-   git clone https://github.com/ionutms/signal-data-explorer.git
-   cd signal-data-explorer
+   git clone https://github.com/ionutms/seg_mem_explorer_demo.git
+   cd seg_mem_explorer_demo
    ```
 
 2. Create a virtual environment and install dependencies using pipenv:
