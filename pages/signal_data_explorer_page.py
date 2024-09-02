@@ -1,14 +1,19 @@
 """
-Signal Data Explorer Page for interactive signal data visualization and
-analysis.
+Signal Data Explorer Page for interactive signal data visualization
+and analysis.
 
 This module provides a Dash-based web application page for exploring and
-visualizing signal data from CSV and ZIP files containing CSV data. It offers
-an interactive interface for file upload, data selection, and dynamic plotting.
+visualizing signal data from CSV and ZIP files containing CSV data. It also
+supports selecting files directly from a GitHub repository, providing a
+convenient way to access and analyze signal data stored in remote locations.
+The module offers an interactive interface for file upload, data selection,
+and dynamic plotting.
 
 Key Features:
 - File upload support for CSV and ZIP files containing CSV data
-- Interactive selection of files, frames, records, and data channels
+- GitHub file selection feature for accessing signal data from remote
+  repositories
+- Interactive selection of files, frames (segments), records, and data channels
 - Dynamic updating of data visualizations based on user selections
 - Responsive layout using Dash Bootstrap Components
 - Integrated signal processing utilities for data analysis
@@ -16,6 +21,7 @@ Key Features:
 
 Components:
 - File upload area for CSV and ZIP files
+- GitHub file selection dropdown
 - Range sliders for selecting specific files, frames, records, and channels
 - Interactive graph for data visualization
 - Theme switch for toggling between light and dark modes
@@ -25,11 +31,12 @@ as a page using the Dash pages plugin. It leverages various utility modules
 for styling, component creation, and signal processing.
 
 Usage:
-1. Upload a CSV or ZIP file containing CSV data
-2. Use range sliders to select specific portions of the data
-3. Click "View selected data" to update the visualization
-4. Interact with the generated plot for detailed data exploration
-5. Toggle between light and dark themes as needed
+1. Upload a CSV or ZIP file containing CSV data or select a file directly from
+   a GitHub repository using the file selection dropdown.
+2. Use the range sliders to select specific portions of the data.
+3. Click "View selected data" to update the visualization.
+4. Interact with the generated plot for detailed data exploration.
+5. Toggle between light and dark themes as needed.
 
 Dependencies:
 - dash and its components (dcc, html, callback, etc.)
@@ -70,7 +77,11 @@ ABOUT = (
     "select and analyze specific portions of the data with precision.",
     "This tool is particularly effective for working with oscilloscope "
     "segmented memory data, enabling efficient analysis of long-duration "
-    "captures with intermittent signals of interest across multiple channels.")
+    "captures with intermittent signals of interest across multiple channels.",
+    "The application also supports selecting files directly from a GitHub "
+    "repository, providing a convenient way to access and analyze signal "
+    "data stored in remote locations."
+)
 
 features = [
     "Support for ZIP files containing multiple CSV data files",
@@ -82,12 +93,18 @@ features = [
     "Support for oscilloscope segmented memory data, allowing analysis "
     "of multiple waveform segments captured over extended time periods",
     "Customizable Y-axis placement for optimal data comparison",
-    "Theme switching between light and dark modes for comfortable viewing"]
+    "Theme switching between light and dark modes for comfortable viewing",
+    "GitHub file selection feature for accessing signal data from remote "
+    "repositories"
+]
 
 usage_steps = [
     "Upload a ZIP file containing CSV signal data using "
     "the drag-and-drop area or file selector.",
-    "Use the range sliders to select specific files within the ZIP archive.",
+    "Alternatively, select a file directly from a GitHub repository using "
+    "the file selection dropdown.",
+    "Use the range sliders to select specific files within the ZIP archive "
+    "or GitHub repository.",
     "Adjust the frames slider to navigate between "
     "different segments of the data.",
     "Use the records slider to focus on specific portions within each frame.",
@@ -98,8 +115,8 @@ usage_steps = [
     "Interact with the multi-axis plot to explore "
     "relationships between channels.",
     "Use the zoom and pan tools to investigate areas of interest in detail.",
-    "Toggle between light and dark themes for optimal viewing."]
-
+    "Toggle between light and dark themes for optimal viewing."
+]
 
 MAIN_DIV_CHILDREN = [
     dbc.Row([dbc.Col([dcc.Link("Go back Home", href="/")])]),
