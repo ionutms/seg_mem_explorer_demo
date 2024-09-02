@@ -43,6 +43,12 @@ GLOBAL_STYLE = {"font-family": "Roboto"}
 FLEX_CENTER_COLUMN = \
     "d-flex flex-column justify-content-center align-items-center"
 
+RESPONSIVE_CENTER_BUTTON_CLASS = \
+    "w-100 d-flex justify-content-center align-items-center mb-2 mb-md-0"
+
+CENTER_CONTENT_CLASS = \
+    "w-100 d-flex justify-content-center align-items-center"
+
 
 def style_accordionitem_title(title: str, font_size: int = 24):
     """Style accordionitem title."""

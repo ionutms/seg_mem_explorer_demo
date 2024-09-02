@@ -75,7 +75,11 @@ def count_csv_files_from_zip(file_contents: str) -> int:
     Returns:
         int: Number of CSV files found in the zip archive.
     """
-    decoded_contents = base64.b64decode(file_contents.split(',')[1])
+    try:
+        decoded_contents = base64.b64decode(file_contents.split(',')[1])
+    except IndexError:
+        decoded_contents = base64.b64decode(file_contents)
+
     with zipfile.ZipFile(io.BytesIO(decoded_contents)) as zip_file:
         csv_file_list = [
             csv_file for csv_file in zip_file.namelist()
@@ -162,7 +166,10 @@ def extract_info_from_zip(
         unique_values = list(dict.fromkeys(value_list))
         return unique_values[0] if len(unique_values) == 1 else unique_values
 
-    decoded_contents = base64.b64decode(file_contents.split(',')[1])
+    try:
+        decoded_contents = base64.b64decode(file_contents.split(',')[1])
+    except IndexError:
+        decoded_contents = base64.b64decode(file_contents)
     extraction_results = {keyword: [] for keyword in keywords}
 
     with zipfile.ZipFile(io.BytesIO(decoded_contents)) as zip_archive:
@@ -198,7 +205,10 @@ def read_and_validate_zip(
     """
     if not file_name.lower().endswith('.zip'):
         raise ValueError("Not a zip file")
-    decoded_contents = base64.b64decode(file_contents.split(',')[1])
+    try:
+        decoded_contents = base64.b64decode(file_contents.split(',')[1])
+    except IndexError:
+        decoded_contents = base64.b64decode(file_contents)
     return zipfile.ZipFile(io.BytesIO(decoded_contents))
 
 
@@ -262,10 +272,19 @@ def create_and_style_figure(
     }
 
     scatter_fig.update_layout(**theme)
-    scatter_fig.update_layout(height=600, legend={
-        "visible": True, "orientation": "h",
-        "yanchor": "bottom", "y": -0.25 + (-0.025*len(figure_data)),
-        "xanchor": "center", "x": 0.5})
+    scatter_fig.update_layout(
+        height=600,
+        legend={
+            "visible": True, "orientation": "h",
+            "yanchor": "bottom", "y": -0.25 + (-0.025*len(figure_data)),
+            "xanchor": "center", "x": 0.5},
+        shapes=[{
+            'type': 'rect', 'xref': 'paper', 'yref': 'paper',
+            'x0': figure_layout['xaxis']['domain'][0],
+            'x1': figure_layout['xaxis']['domain'][1],
+            'y0': 0, 'y1': 1, 'line': {'width': 1, 'dash': 'dot'}}]
+    )
+
     return scatter_fig
 
 
@@ -310,7 +329,9 @@ def process_one_csv_file_for_scatter_data(
             scatter_data.append(go.Scatter(
                 x=data_frame[filtering["x_axis_data"]][start:start+slice_size],
                 y=data_frame[f'{channel_name}'][start:start+slice_size],
-                yaxis=yaxis, legendgroup=channel_name, name=trace_name))
+                yaxis=yaxis, name=trace_name,
+                legendgroup=channel_name if filtering.get(
+                    'legend_group') else None))
     return scatter_data
 
 
@@ -656,7 +677,10 @@ def extract_data_frame_from_zip_contents(
         return []
 
     try:
-        decoded_contents = base64.b64decode(file_contents.split(',')[1])
+        try:
+            decoded_contents = base64.b64decode(file_contents.split(',')[1])
+        except IndexError:
+            decoded_contents = base64.b64decode(file_contents)
 
         with zipfile.ZipFile(io.BytesIO(decoded_contents)) as zip_file:
             csv_files = get_csv_files_from_zip(zip_file, filtering)
