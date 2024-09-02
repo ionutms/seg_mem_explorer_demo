@@ -14,6 +14,7 @@ Functions:
     extract_info_from_zip_as_int: Extract integer information from a ZIP file.
     callback_update_store_at_upload:
         Generate callback to update store on upload.
+    create_labeled_input: Create a labeled input component.
     create_labeled_button: Create a labeled button component.
     callback_update_range_slider_value:
         Generate callback to update slider value.
@@ -37,6 +38,7 @@ from dash import html, dcc
 from dash import callback
 from dash import no_update, ctx
 from dash.dependencies import ALL, MATCH, Input, Output, State
+from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 
 import pages.utils.style_utils as styles
@@ -330,7 +332,7 @@ def extract_info_from_zip_as_int(
 
 def callback_update_store_at_upload(
     base_id: str,
-    upload_id: str,
+    file_store_id: str,
     store_id: str,
     process: Callable,
     search_key: str | None = None
@@ -351,17 +353,15 @@ def callback_update_store_at_upload(
         None. The function registers callbacks with the Dash app.
     """
     @callback(
-        Output(f'{base_id}_store', 'data'),
-        Output(f'{base_id}_range_slider', 'marks'),
-        Input(f'{upload_id}', 'contents'),
-        State(f'{upload_id}', 'filename'),
+        Output(f'{base_id}_store', 'data', allow_duplicate=True),
+        Output(f'{base_id}_range_slider', 'marks', allow_duplicate=True),
+        Input(f'{file_store_id}', 'data'),
         State(f'{store_id}', 'data'),
         State(f'{base_id}_store', 'data'),
         prevent_initial_call=True
     )
     def update_count_from_zip(
         contents: str,
-        filename: str,
         global_store: Dict[str, Any],
         store: Dict[str, Any],
     ) -> Dict[str, Any]:
@@ -384,19 +384,50 @@ def callback_update_store_at_upload(
             PreventUpdate: If the uploaded file is not a ZIP file.
         """
 
-        if filename.lower().endswith('.zip'):
+        if contents['filename'].lower().endswith('.zip'):
             if process.__name__ == "extract_info_from_zip_as_int":
-                store['max_count'] = process(contents, filename, search_key)
+                store['max_count'] = process(
+                    contents['content'], contents['filename'], search_key)
                 return store, None
             if process.__name__ == "count_csv_files_from_zip":
-                store['max_count'] = process(contents)
+                store['max_count'] = process(contents['content'])
                 return store, None
             if process.__name__ == "extract_data_frame_from_zip_contents":
-                names = process(contents, filename, global_store)
+                names = process(
+                    contents['content'], contents['filename'], global_store)
                 store['max_count'] = len(names)
                 marks = dict(enumerate(names, 1))
                 return store, marks
         return no_update, no_update
+
+
+def create_labeled_input(
+    id_section: str,
+    label: str,
+    placeholder: str,
+    value: Any,
+    md: int = 3
+) -> dbc.Col:
+    """Create a labeled input column.
+
+    Args:
+        id_section: ID for the input element.
+        label: Text for the input label.
+        placeholder: Placeholder text for the input.
+        value: Default value for the input.
+        md: Column width for medium screens and up. Defaults to 3.
+
+    Returns:
+        A Bootstrap column containing a labeled input and horizontal rule.
+    """
+    labeled_input_column = dbc.Col([
+        dbc.Label(label, className=styles.CENTER_CLASS_NAME),
+        dbc.Input(
+            id=id_section, type="text", placeholder=placeholder,
+            value=value, className="d-flex flex-wrap"),
+        html.Br(),
+    ], xs=12, md=md)
+    return labeled_input_column
 
 
 def create_labeled_button(
@@ -518,7 +549,7 @@ def callback_update_range_slider_max_and_label(
 
     @callback(
         Output(f'{base_id}_button', 'children', allow_duplicate=True),
-        Input(f'{upload_id}', 'contents'),
+        Input(f'{upload_id}', 'data'),
         prevent_initial_call=True
     )
     def reset_labeled_counter_callback(_upload: str) -> int:
@@ -663,8 +694,11 @@ def callbacks_radioitems(
         Returns:
             A list of Column components containing radio items.
         """
+        if values is None:
+            raise PreventUpdate
+
         columns = []
-        y_axis_channels = [marks[str(position)] for position in values[1:]]
+        y_axis_channels = [marks[f'{position}'] for position in values[1:]]
         options = [
             {"label": f'y{index}' if index > 1 else 'y', "value": index}
             for index, _ in enumerate(y_axis_channels, 1)]
@@ -706,13 +740,27 @@ def callbacks_radioitems(
         filtering: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
-        TODO
+        Update the filtering store with the legend group switch state.
+
+        This function adds or updates the 'legend_group' key in the filtering
+        dictionary based on the state of the legend group switch.
+
+        Args:
+            legend_group_switch (bool): The state of the legend group switch.
+            filtering (Dict[str, Any]): The current filtering dictionary.
+
+        Returns:
+            Dict[str, Any]: The updated filtering dictionary.
+
+        Note:
+            If filtering is None or not a dictionary, an empty dictionary
+            is returned with only the 'legend_group' key.
         """
-        try:
-            filtering.update({"legend_group": legend_group_switch})
-            return filtering
-        except (KeyError, IndexError):
-            return filtering
+        if not isinstance(filtering, dict):
+            return {"legend_group": legend_group_switch}
+
+        filtering["legend_group"] = legend_group_switch
+        return filtering
 
     @callback(
         Output('filtering_store', 'data', allow_duplicate=True),
@@ -788,3 +836,62 @@ def callbacks_radioitems(
             The updated label text ('Right' or 'Left').
         """
         return 'Right' if switch else 'Left'
+
+
+def make_input_groups_column(
+    label: str,
+    input_id: str,
+    value: str,
+    md: int,
+    theme_trigger_id: str
+) -> dbc.Col:
+    """
+    Create a column with two input groups for a label and input field.
+
+    Args:
+        label (str): Text to display in the first input group.
+        input_id (str): ID for the input field in the second group.
+        value (str): Initial value for the input field.
+        md (int):
+            Number of columns the component should
+            span on medium and larger screens.
+        theme_trigger_id (str): ID of the theme switch trigger component.
+
+    Returns:
+        dbc.Col:
+            A Dash Bootstrap Components Column containing two input groups.
+            The column spans 12 columns on extra small screens
+            and 'md' columns on medium and larger screens.
+    """
+    input_groups_column = dbc.Col([
+        dbc.InputGroup([
+            dbc.InputGroupText(label, className="flex-grow-1 px-2"),
+            dbc.InputGroupText("/", className="px-2")
+        ], className="w-100"),
+        dbc.InputGroup([
+            dbc.Input(id=input_id, value=value, className="px-2"),
+            dbc.InputGroupText("/", className="px-2")
+        ])
+    ], xs=12, md=md, className="mb-1 d-flex flex-column")
+
+    @callback(
+        Output(input_id, 'style'),
+        Input(theme_trigger_id, 'data'),
+    )
+    def update_input_styles(theme_switch: bool) -> Dict[str, str]:
+        """
+        Update the input styles based on the theme switch.
+
+        Args:
+            theme_switch (bool): True if light theme, False if dark theme.
+
+        Returns:
+            Dict[str, str]: A dictionary of CSS styles for the input.
+        """
+        input_style = {
+            'background-color': '#eee' if theme_switch else '#555',
+            'color': '#555' if theme_switch else '#eee'
+        }
+        return input_style
+
+    return input_groups_column
