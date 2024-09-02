@@ -4,7 +4,7 @@
 
 The Signal Data Explorer is an interactive web application designed for visualizing and analyzing complex signal data from ZIP files containing CSV data. It offers a powerful and user-friendly interface for exploring multi-channel, multi-segment signal data sets, allowing users to select and analyze specific portions of the data with precision.
 
-This tool is particularly effective for working with oscilloscope segmented memory data, enabling efficient analysis of long-duration captures with intermittent signals of interest across multiple channels.
+This tool is particularly effective for working with oscilloscope segmented memory data, enabling efficient analysis of long-duration captures with intermittent signals of interest across multiple channels. The application also supports selecting files directly from a GitHub repository, providing a convenient way to access and analyze signal data stored in remote locations.
 
 ## Live Demo
 
@@ -17,6 +17,7 @@ Feel free to explore the features and functionality of the application directly 
 ## Features
 
 - Support for ZIP files containing multiple CSV data files
+- GitHub file selection feature for accessing signal data from remote repositories
 - Interactive selection of files, frames (segments), records, and channels
 - Multi-axis plotting capabilities for comparing different data channels
 - Dynamic updating of data visualization based on user selections
@@ -92,7 +93,9 @@ Here are some key screenshots of the Signal Data Explorer in action:
 
 2. Main Interface
 
-<img src="/docs/images/main-interface-800x600.png" alt="Signal Data Explorer main interface" width="100%" max-width="800px">
+<img src="/docs/images/main-interface-file-source-area-800x600.png" alt="Signal Data Explorer main interface file source area" width="100%" max-width="800px">
+
+<img src="/docs/images/main-interface-control-panels-area-800x600.png" alt="Signal Data Explorer main interface control panels area" width="100%" max-width="800px">
 
 *The main interface of the Signal Data Explorer, showing the file upload area and control panels.*
 
