@@ -10,9 +10,9 @@ import dash_bootstrap_components as dbc
 import pages.utils.style_utils as styles
 import pages.utils.dash_component_utils as dcu
 
-link_name = __name__.rsplit('.', maxsplit=1)[-1].replace('_page', '').title()
+link_name = __name__.rsplit(".", maxsplit=1)[-1].replace("_page", "").title()
 
-dash.register_page(__name__, name=link_name, path='/')
+dash.register_page(__name__, name=link_name, path="/")
 
 TITLE = "Home Page"
 ABOUT = (
@@ -39,14 +39,14 @@ layout = dbc.Container([html.Div([
     dbc.Row([dbc.Col([html.H3(
         f"{link_name.replace('_', ' ')}", style=styles.heading_3_style)])]),
     dbc.Row([dcu.app_description(TITLE, ABOUT, features, usage_steps)]),
-    html.Div(id='links_display'),
+    html.Div(id="links_display"),
 ], style=styles.GLOBAL_STYLE)
 ], fluid=True)
 
 
 @callback(
-    Output('links_display', 'children'),
-    Input('links_store', 'data')
+    Output("links_display", "children"),
+    Input("links_store", "data")
 )
 def display_links(links: list[dict] | None) -> html.Div | str:
     """
@@ -72,6 +72,6 @@ def display_links(links: list[dict] | None) -> html.Div | str:
         return "Loading links..."
 
     return html.Div([
-        html.Div(dcc.Link(link['name'], href=link['path']))
+        html.Div(dcc.Link(link["name"], href=link["path"]))
         for link in links
     ][:-1])

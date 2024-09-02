@@ -76,14 +76,14 @@ def count_csv_files_from_zip(file_contents: str) -> int:
         int: Number of CSV files found in the zip archive.
     """
     try:
-        decoded_contents = base64.b64decode(file_contents.split(',')[1])
+        decoded_contents = base64.b64decode(file_contents.split(",")[1])
     except IndexError:
         decoded_contents = base64.b64decode(file_contents)
 
     with zipfile.ZipFile(io.BytesIO(decoded_contents)) as zip_file:
         csv_file_list = [
             csv_file for csv_file in zip_file.namelist()
-            if csv_file.lower().endswith('.csv')]
+            if csv_file.lower().endswith(".csv")]
     return len(csv_file_list)
 
 
@@ -113,7 +113,7 @@ def find_first_empty_row_index(
     """
 
     def process_csv(file):
-        csv_reader = csv.reader(io.TextIOWrapper(file, 'utf-8'))
+        csv_reader = csv.reader(io.TextIOWrapper(file, "utf-8"))
         for chunk_start, chunk in enumerate(iter(
                 lambda: list(itertools.islice(csv_reader, chunk_size)), [])):
             for row_index, row in enumerate(chunk):
@@ -127,12 +127,12 @@ def find_first_empty_row_index(
         with zip_file.open(csv_file_name) as file:
             first_empty_row_index_list.append(process_csv(file))
 
-    results = {'first_empty_row_index': 0}
+    results = {"first_empty_row_index": 0}
 
     if first_empty_row_index_list and all(
             index == first_empty_row_index_list[0]
             for index in first_empty_row_index_list):
-        results['first_empty_row_index'] = first_empty_row_index_list[0]-1
+        results["first_empty_row_index"] = first_empty_row_index_list[0]-1
 
     return results
 
@@ -154,7 +154,7 @@ def extract_info_from_zip(
             if all values are the same, or a list of unique strings as values.
     """
     def process_csv_file(file_object, search_keywords):
-        csv_reader = csv.reader(io.TextIOWrapper(file_object, 'utf-8'))
+        csv_reader = csv.reader(io.TextIOWrapper(file_object, "utf-8"))
         chunk = list(itertools.islice(csv_reader, 20))
         return {keyword: [
             row[index + 1] for row in chunk
@@ -167,7 +167,7 @@ def extract_info_from_zip(
         return unique_values[0] if len(unique_values) == 1 else unique_values
 
     try:
-        decoded_contents = base64.b64decode(file_contents.split(',')[1])
+        decoded_contents = base64.b64decode(file_contents.split(",")[1])
     except IndexError:
         decoded_contents = base64.b64decode(file_contents)
     extraction_results = {keyword: [] for keyword in keywords}
@@ -175,7 +175,7 @@ def extract_info_from_zip(
     with zipfile.ZipFile(io.BytesIO(decoded_contents)) as zip_archive:
         csv_file_list = [
             filename for filename in zip_archive.namelist()
-            if filename.lower().endswith('.csv')]
+            if filename.lower().endswith(".csv")]
         for csv_filename in csv_file_list:
             with zip_archive.open(csv_filename) as csv_file:
                 file_results = process_csv_file(csv_file, keywords)
@@ -203,10 +203,10 @@ def read_and_validate_zip(
     Raises:
         ValueError: If the file is not a zip file.
     """
-    if not file_name.lower().endswith('.zip'):
+    if not file_name.lower().endswith(".zip"):
         raise ValueError("Not a zip file")
     try:
-        decoded_contents = base64.b64decode(file_contents.split(',')[1])
+        decoded_contents = base64.b64decode(file_contents.split(",")[1])
     except IndexError:
         decoded_contents = base64.b64decode(file_contents)
     return zipfile.ZipFile(io.BytesIO(decoded_contents))
@@ -232,7 +232,7 @@ def get_csv_file_list(
     """
     csv_file_list = [
         csv_file for csv_file in zip_file.namelist()
-        if csv_file.lower().endswith('.csv')]
+        if csv_file.lower().endswith(".csv")]
     if not csv_file_list:
         raise ValueError("No CSV files found in zip")
     try:
@@ -264,11 +264,11 @@ def create_and_style_figure(
     scatter_fig = go.Figure(data=figure_data, layout=figure_layout)
 
     theme = {
-        'template': 'plotly' if theme_switch else 'plotly_dark',
-        'paper_bgcolor': 'white' if theme_switch else '#222222',
-        'plot_bgcolor': 'white' if theme_switch else '#222222',
-        'font_color': 'black' if theme_switch else 'white',
-        'margin': {'l': 10, 'r': 10, 't': 10, 'b': 10}
+        "template": "plotly" if theme_switch else "plotly_dark",
+        "paper_bgcolor": "white" if theme_switch else "#222222",
+        "plot_bgcolor": "white" if theme_switch else "#222222",
+        "font_color": "black" if theme_switch else "white",
+        "margin": {"l": 10, "r": 10, "t": 10, "b": 10}
     }
 
     scatter_fig.update_layout(**theme)
@@ -279,10 +279,10 @@ def create_and_style_figure(
             "yanchor": "bottom", "y": -0.25 + (-0.025*len(figure_data)),
             "xanchor": "center", "x": 0.5},
         shapes=[{
-            'type': 'rect', 'xref': 'paper', 'yref': 'paper',
-            'x0': figure_layout['xaxis']['domain'][0],
-            'x1': figure_layout['xaxis']['domain'][1],
-            'y0': 0, 'y1': 1, 'line': {'width': 1, 'dash': 'dot'}}]
+            "type": "rect", "xref": "paper", "yref": "paper",
+            "x0": figure_layout["xaxis"]["domain"][0],
+            "x1": figure_layout["xaxis"]["domain"][1],
+            "y0": 0, "y1": 1, "line": {"width": 1, "dash": "dot"}}]
     )
 
     return scatter_fig
@@ -308,8 +308,8 @@ def process_one_csv_file_for_scatter_data(
     Returns:
         List[go.Scatter]: List of Scatter objects for plotting.
     """
-    csv_contents = zip_file.read(csv_file_name).decode('utf-8')
-    skiprows = process_result['first_empty_row_index'] + 1
+    csv_contents = zip_file.read(csv_file_name).decode("utf-8")
+    skiprows = process_result["first_empty_row_index"] + 1
     data_frame = pd.read_csv(io.StringIO(csv_contents), skiprows=skiprows)
 
     scatter_data = []
@@ -319,19 +319,19 @@ def process_one_csv_file_for_scatter_data(
     for frame_index in filtering["frames_to_keep"]:
         start = filtering["records_max"] * frame_index + records_slice[0]
         for channel_name in filtering["y_axis_data"]:
-            trace_name = f'{channel_name} frame{frame_index+1} {csv_file_name}'
+            trace_name = f"{channel_name} frame{frame_index+1} {csv_file_name}"
 
-            yaxis = 'y'
-            if 'y_axis_selection' in list(filtering.keys()):
-                if channel_name in list(filtering['y_axis_selection'].keys()):
-                    yaxis = filtering['y_axis_selection'][channel_name]
+            yaxis = "y"
+            if "y_axis_selection" in list(filtering.keys()):
+                if channel_name in list(filtering["y_axis_selection"].keys()):
+                    yaxis = filtering["y_axis_selection"][channel_name]
 
             scatter_data.append(go.Scatter(
                 x=data_frame[filtering["x_axis_data"]][start:start+slice_size],
-                y=data_frame[f'{channel_name}'][start:start+slice_size],
+                y=data_frame[f"{channel_name}"][start:start+slice_size],
                 yaxis=yaxis, name=trace_name,
                 legendgroup=channel_name if filtering.get(
-                    'legend_group') else None))
+                    "legend_group") else None))
     return scatter_data
 
 
@@ -429,17 +429,17 @@ def create_base_layout_configuration(
         Dict[str, Any]: Base layout configuration.
     """
     return {
-        'xaxis': {
-            'gridcolor': '#808080', 'griddash': 'dash',
-            'zerolinecolor': 'lightgray', 'zeroline': False,
-            'title': {'text': filtering['Horizontal Units'], 'standoff': 5},
-            'domain': (0.0, 1.0)
+        "xaxis": {
+            "gridcolor": "#808080", "griddash": "dash",
+            "zerolinecolor": "lightgray", "zeroline": False,
+            "title": {"text": filtering["Horizontal Units"], "standoff": 5},
+            "domain": (0.0, 1.0)
         },
-        'yaxis': {
-            'gridcolor': '#808080', 'griddash': 'dash',
-            'zerolinecolor': 'lightgray', 'zeroline': False,
-            'tickangle': -90, 'position': 0.0, 'anchor': 'free',
-            'title': {'text': filtering['Vertical Units'], 'standoff': 5}
+        "yaxis": {
+            "gridcolor": "#808080", "griddash": "dash",
+            "zerolinecolor": "lightgray", "zeroline": False,
+            "tickangle": -90, "position": 0.0, "anchor": "free",
+            "title": {"text": filtering["Vertical Units"], "standoff": 5}
         }
     }
 
@@ -458,8 +458,8 @@ def update_layout_with_y_axes(
             Dictionary containing filtering information.
     """
     try:
-        y_selection = list(filtering['y_axis_selection'].values())
-        y_side = list(filtering['y_axis_side'].values())
+        y_selection = list(filtering["y_axis_selection"].values())
+        y_side = list(filtering["y_axis_side"].values())
         left_list, right_list = separate_left_right_axes(y_selection, y_side)
 
         update_x_axis_domain(layout_configuration, left_list, right_list)
@@ -488,10 +488,10 @@ def separate_left_right_axes(
     """
     left_list = [
         item for item, flag in zip(y_selection, y_side)
-        if not flag and item != 'y']
+        if not flag and item != "y"]
     right_list = [
         item for item, flag in zip(y_selection, y_side)
-        if flag and item != 'y']
+        if flag and item != "y"]
     return left_list, right_list
 
 
@@ -512,7 +512,7 @@ def update_x_axis_domain(
     left_side_domain = len(set(left_list)) * 0.05 if left_list else 0.0
     right_side_domain = \
         1.05 - len(set(right_list)) * 0.05 if right_list else 1.0
-    layout_configuration['xaxis']['domain'] = (
+    layout_configuration["xaxis"]["domain"] = (
         left_side_domain, right_side_domain)
 
 
@@ -586,15 +586,15 @@ def create_y_axis_config(
         Dict[str, Any]: Configuration for the y-axis.
     """
     config = {
-        'overlaying': 'y',
-        'showgrid': False,
-        'zeroline': False,
-        'position': positions[name],
-        'tickangle': -90,
-        'title': {'text': filtering['Vertical Units'], 'standoff': 5}
+        "overlaying": "y",
+        "showgrid": False,
+        "zeroline": False,
+        "position": positions[name],
+        "tickangle": -90,
+        "title": {"text": filtering["Vertical Units"], "standoff": 5}
     }
     if is_right:
-        config['side'] = 'right'
+        config["side"] = "right"
     return config
 
 
@@ -615,7 +615,7 @@ def get_csv_files_from_zip(
     """
     csv_file_list = [
         csv_file for csv_file in zip_file.namelist()
-        if csv_file.lower().endswith('.csv')]
+        if csv_file.lower().endswith(".csv")]
     try:
         return [
             item for index, item in enumerate(csv_file_list)
@@ -644,10 +644,10 @@ def process_csv_file_for_data_frame_extraction(
     Returns:
         List[str]: A list of column names from the CSV file.
     """
-    csv_contents = zip_file.read(csv_file_name).decode('utf-8')
+    csv_contents = zip_file.read(csv_file_name).decode("utf-8")
     data_frame = pd.read_csv(
         io.StringIO(csv_contents),
-        skiprows=process_result['first_empty_row_index']+1,
+        skiprows=process_result["first_empty_row_index"]+1,
         nrows=1)
     return list(data_frame.columns)
 
@@ -672,13 +672,13 @@ def extract_data_frame_from_zip_contents(
             or an empty list if an error occurs or no matching CSV files are
             found.
     """
-    if not file_name.lower().endswith('.zip'):
-        print('Please upload a zip file.')
+    if not file_name.lower().endswith(".zip"):
+        print("Please upload a zip file.")
         return []
 
     try:
         try:
-            decoded_contents = base64.b64decode(file_contents.split(',')[1])
+            decoded_contents = base64.b64decode(file_contents.split(",")[1])
         except IndexError:
             decoded_contents = base64.b64decode(file_contents)
 
@@ -686,7 +686,7 @@ def extract_data_frame_from_zip_contents(
             csv_files = get_csv_files_from_zip(zip_file, filtering)
 
             if not csv_files:
-                print('No CSV files found in the zip archive.')
+                print("No CSV files found in the zip archive.")
                 return []
 
             first_empty_row_index = find_first_empty_row_index(
@@ -701,5 +701,5 @@ def extract_data_frame_from_zip_contents(
             tuple(map(tuple, df)) for df in data_frames)) == 1 else []
 
     except (base64.binascii.Error, zipfile.BadZipFile) as error_msg:
-        print(f'There was an error processing the file: {str(error_msg)}')
+        print(f"There was an error processing the file: {str(error_msg)}")
         return []

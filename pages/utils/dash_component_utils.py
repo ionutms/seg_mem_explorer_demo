@@ -100,19 +100,19 @@ def labeled_counter_trio(
             Bootstrap column containing the label and counter button group.
     """
     counter_button_group = dbc.Col([
-        dcc.Store(id=f'{id_section}_store', data=limits),
+        dcc.Store(id=f"{id_section}_store", data=limits),
         dbc.Label(
-            children=label, id=f'{id_section}_label',
+            children=label, id=f"{id_section}_label",
             className=styles.CENTER_CLASS_NAME),
         dbc.ButtonGroup([
             dbc.Button(
-                "<", id=f'{id_section}_decrement_button',
+                "<", id=f"{id_section}_decrement_button",
                 outline=False, color="secondary"),
             dbc.Button(
-                f"{default_count}", id=f'{id_section}_button',
+                f"{default_count}", id=f"{id_section}_button",
                 outline=False, color="secondary", disabled=True),
             dbc.Button(
-                ">", id=f'{id_section}_increment_button',
+                ">", id=f"{id_section}_increment_button",
                 outline=False, color="secondary")
         ], className="d-flex flex-wrap"),
         html.Br()], xs=12, md=md)
@@ -134,11 +134,11 @@ def callback_labeled_counter_trio(
         None. The function registers callbacks with the Dash app.
     """
     @callback(
-        Output(f'{base_id}_button', 'children'),
-        Input(f'{base_id}_decrement_button', 'n_clicks'),
-        Input(f'{base_id}_increment_button', 'n_clicks'),
-        State(f'{base_id}_store', 'data'),
-        State(f'{base_id}_button', 'children'),
+        Output(f"{base_id}_button", "children"),
+        Input(f"{base_id}_decrement_button", "n_clicks"),
+        Input(f"{base_id}_increment_button", "n_clicks"),
+        State(f"{base_id}_store", "data"),
+        State(f"{base_id}_button", "children"),
         prevent_initial_call=True
     )
     def labeled_counter_trio_callback(
@@ -169,9 +169,9 @@ def callback_labeled_counter_trio(
         except (KeyError, ValueError):
             return no_update
 
-        if ctx.triggered_id == f'{base_id}_decrement_button':
+        if ctx.triggered_id == f"{base_id}_decrement_button":
             current -= resolution
-        elif ctx.triggered_id == f'{base_id}_increment_button':
+        elif ctx.triggered_id == f"{base_id}_increment_button":
             current += resolution
 
         return max(min(current, max_count), min_count)
@@ -200,26 +200,26 @@ def labeled_counter_quintet(
             Bootstrap column containing the label and counter button group.
     """
     counter_button_group = dbc.Col([
-        dcc.Store(id=f'{id_section}_store', data=limits),
+        dcc.Store(id=f"{id_section}_store", data=limits),
         dbc.Label(
-            children=label, id=f'{id_section}_label',
+            children=label, id=f"{id_section}_label",
             className=styles.CENTER_CLASS_NAME
         ),
         dbc.ButtonGroup([
             dbc.Button(
-                "<<", id=f'{id_section}_divide_button',
+                "<<", id=f"{id_section}_divide_button",
                 outline=False, color="secondary"),
             dbc.Button(
-                "<", id=f'{id_section}_decrement_button',
+                "<", id=f"{id_section}_decrement_button",
                 outline=False, color="secondary"),
             dbc.Button(
-                f"{default_count}", id=f'{id_section}_button',
+                f"{default_count}", id=f"{id_section}_button",
                 outline=False, color="secondary", disabled=True),
             dbc.Button(
-                ">", id=f'{id_section}_increment_button',
+                ">", id=f"{id_section}_increment_button",
                 outline=False, color="secondary"),
             dbc.Button(
-                ">>", id=f'{id_section}_multiply_button',
+                ">>", id=f"{id_section}_multiply_button",
                 outline=False, color="secondary"),
         ], className="d-flex flex-wrap"),
         html.Br()], xs=12, md=md)
@@ -243,13 +243,13 @@ def callback_labeled_counter_quintet(
         None. The function registers callbacks with the Dash app.
     """
     @callback(
-        Output(f'{base_id}_button', 'children'),
-        Input(f'{base_id}_divide_button', 'n_clicks'),
-        Input(f'{base_id}_decrement_button', 'n_clicks'),
-        Input(f'{base_id}_increment_button', 'n_clicks'),
-        Input(f'{base_id}_multiply_button', 'n_clicks'),
-        State(f'{base_id}_store', 'data'),
-        State(f'{base_id}_button', 'children'),
+        Output(f"{base_id}_button", "children"),
+        Input(f"{base_id}_divide_button", "n_clicks"),
+        Input(f"{base_id}_decrement_button", "n_clicks"),
+        Input(f"{base_id}_increment_button", "n_clicks"),
+        Input(f"{base_id}_multiply_button", "n_clicks"),
+        State(f"{base_id}_store", "data"),
+        State(f"{base_id}_button", "children"),
         prevent_initial_call=True
     )
     def labeled_counter_quintet_callback(
@@ -284,13 +284,13 @@ def callback_labeled_counter_quintet(
         except (KeyError, ValueError):
             return no_update
 
-        if ctx.triggered_id == f'{base_id}_divide_button':
+        if ctx.triggered_id == f"{base_id}_divide_button":
             current /= 10
-        elif ctx.triggered_id == f'{base_id}_decrement_button':
+        elif ctx.triggered_id == f"{base_id}_decrement_button":
             current -= resolution
-        elif ctx.triggered_id == f'{base_id}_increment_button':
+        elif ctx.triggered_id == f"{base_id}_increment_button":
             current += resolution
-        elif ctx.triggered_id == f'{base_id}_multiply_button':
+        elif ctx.triggered_id == f"{base_id}_multiply_button":
             current *= 10
 
         return round(
@@ -324,7 +324,7 @@ def extract_info_from_zip_as_int(
         This function assumes that the `extract_info_from_zip` function returns
         a dictionary where values are either strings or lists of strings.
     """
-    if file_name.lower().endswith('.zip'):
+    if file_name.lower().endswith(".zip"):
         return int(next(iter(spu.extract_info_from_zip(
             contents, [search_key]).values())))
     return no_update
@@ -353,11 +353,11 @@ def callback_update_store_at_upload(
         None. The function registers callbacks with the Dash app.
     """
     @callback(
-        Output(f'{base_id}_store', 'data', allow_duplicate=True),
-        Output(f'{base_id}_range_slider', 'marks', allow_duplicate=True),
-        Input(f'{file_store_id}', 'data'),
-        State(f'{store_id}', 'data'),
-        State(f'{base_id}_store', 'data'),
+        Output(f"{base_id}_store", "data", allow_duplicate=True),
+        Output(f"{base_id}_range_slider", "marks", allow_duplicate=True),
+        Input(f"{file_store_id}", "data"),
+        State(f"{store_id}", "data"),
+        State(f"{base_id}_store", "data"),
         prevent_initial_call=True
     )
     def update_count_from_zip(
@@ -384,18 +384,18 @@ def callback_update_store_at_upload(
             PreventUpdate: If the uploaded file is not a ZIP file.
         """
 
-        if contents['filename'].lower().endswith('.zip'):
+        if contents["filename"].lower().endswith(".zip"):
             if process.__name__ == "extract_info_from_zip_as_int":
-                store['max_count'] = process(
-                    contents['content'], contents['filename'], search_key)
+                store["max_count"] = process(
+                    contents["content"], contents["filename"], search_key)
                 return store, None
             if process.__name__ == "count_csv_files_from_zip":
-                store['max_count'] = process(contents['content'])
+                store["max_count"] = process(contents["content"])
                 return store, None
             if process.__name__ == "extract_data_frame_from_zip_contents":
                 names = process(
-                    contents['content'], contents['filename'], global_store)
-                store['max_count'] = len(names)
+                    contents["content"], contents["filename"], global_store)
+                store["max_count"] = len(names)
                 marks = dict(enumerate(names, 1))
                 return store, marks
         return no_update, no_update
@@ -449,10 +449,10 @@ def create_labeled_button(
     """
     labeled_button_column = dbc.Col([
         dbc.Label(
-            label, id=f'{id_section}_label',
+            label, id=f"{id_section}_label",
             className=styles.CENTER_CLASS_NAME),
         dbc.Button(
-            button_label, id=f'{id_section}_button',
+            button_label, id=f"{id_section}_button",
             className=styles.CENTER_CLASS_NAME),
         html.Br(),
     ], xs=12, md=md)
@@ -473,9 +473,9 @@ def callback_update_range_slider_value(
         None. The function registers callbacks with the Dash app.
     """
     @callback(
-        Output(f'{base_id}_range_slider', 'value'),
-        Input(f'{base_id}_button', 'children'),
-        Input(f'{base_id}_range_slider', 'value'),
+        Output(f"{base_id}_range_slider", "value"),
+        Input(f"{base_id}_button", "children"),
+        Input(f"{base_id}_range_slider", "value"),
         prevent_initial_call=True
     )
     def update_range_slider_value(
@@ -491,7 +491,7 @@ def callback_update_range_slider_value(
         Returns:
             A list of integers from 1 to the current count.
         """
-        if ctx.triggered_id == f'{base_id}_range_slider':
+        if ctx.triggered_id == f"{base_id}_range_slider":
             if lock is not None:
                 if range_slider_input[lock] != 1:
                     range_slider_input[lock] = 1
@@ -521,10 +521,10 @@ def callback_update_range_slider_max_and_label(
         None. The function registers callbacks with the Dash app.
     """
     @callback(
-        Output(f'{base_id}_label', 'children'),
-        Output(f'{base_id}_range_slider', 'max'),
-        Input(f'{base_id}_store', 'data'),
-        State(f'{base_id}_label', 'children'),
+        Output(f"{base_id}_label", "children"),
+        Output(f"{base_id}_range_slider", "max"),
+        Input(f"{base_id}_store", "data"),
+        State(f"{base_id}_label", "children"),
         prevent_initial_call=True
     )
     def update_range_slider_max_and_label(
@@ -542,14 +542,14 @@ def callback_update_range_slider_max_and_label(
         """
         try:
             new_label = label.replace(label.split(
-                ' ')[0], str(store["max_count"]))
+                " ")[0], str(store["max_count"]))
             return new_label, store["max_count"]
         except KeyError:
             return label, 0
 
     @callback(
-        Output(f'{base_id}_button', 'children', allow_duplicate=True),
-        Input(f'{upload_id}', 'data'),
+        Output(f"{base_id}_button", "children", allow_duplicate=True),
+        Input(f"{upload_id}", "data"),
         prevent_initial_call=True
     )
     def reset_labeled_counter_callback(_upload: str) -> int:
@@ -564,8 +564,8 @@ def callback_update_range_slider_max_and_label(
         return reset_value
 
     @callback(
-        Output(f'{base_id}_row', 'style'),
-        Input(f'{base_id}_store', 'data'),
+        Output(f"{base_id}_row", "style"),
+        Input(f"{base_id}_store", "data"),
         prevent_initial_call=True
     )
     def control_style(
@@ -579,8 +579,8 @@ def callback_update_range_slider_max_and_label(
         Returns:
             A dictionary specifying the display style for the row.
         """
-        return {'display': 'none'} \
-            if store['max_count'] == 1 else {'display': ''}
+        return {"display": "none"} \
+            if store["max_count"] == 1 else {"display": ""}
 
 
 def callback_update_range_slider_pushable_and_value(
@@ -595,10 +595,10 @@ def callback_update_range_slider_pushable_and_value(
         None. The function registers callbacks with the Dash app.
     """
     @callback(
-        Output(f'{base_id}_range_slider', 'pushable'),
-        Output(f'{base_id}_range_slider', 'value'),
-        Input(f'{base_id}_button', 'children'),
-        State(f'{base_id}_range_slider', 'value'),
+        Output(f"{base_id}_range_slider", "pushable"),
+        Output(f"{base_id}_range_slider", "value"),
+        Input(f"{base_id}_button", "children"),
+        State(f"{base_id}_range_slider", "value"),
         prevent_initial_call=True
     )
     def update_range_slider_pushable_and_value(
@@ -698,9 +698,9 @@ def callbacks_radioitems(
             raise PreventUpdate
 
         columns = []
-        y_axis_channels = [marks[f'{position}'] for position in values[1:]]
+        y_axis_channels = [marks[f"{position}"] for position in values[1:]]
         options = [
-            {"label": f'y{index}' if index > 1 else 'y', "value": index}
+            {"label": f"y{index}" if index > 1 else "y", "value": index}
             for index, _ in enumerate(y_axis_channels, 1)]
 
         for index, y_axis_data in enumerate(y_axis_channels[1:], 1):
@@ -708,18 +708,18 @@ def callbacks_radioitems(
                 dbc.Col([
                     dbc.Label(
                         f"{y_axis_data} axis selection",
-                        id={'type': 'label selection', 'index': index},
+                        id={"type": "label selection", "index": index},
                         className=styles.CENTER_CLASS_NAME),
                     dbc.RadioItems(
                         options=options, value=options[0]["value"],
-                        id={'type': 'radioitems', 'index': index},
+                        id={"type": "radioitems", "index": index},
                         className=styles.CENTER_CLASS_NAME, inline=True),
                 ], xs=10, md=10),
                 dbc.Col([
                     dbc.Label(
-                        'Left', id={'type': 'label side', 'index': index}),
+                        "Left", id={"type": "label side", "index": index}),
                     dbc.Switch(
-                        id={'type': 'switch', 'index': index},
+                        id={"type": "switch", "index": index},
                         value=False, className="d-flex justify-content-center")
                 ], xs=2, md=2, className=styles.FLEX_CENTER_COLUMN)
             ])], body=True, style={
@@ -730,9 +730,9 @@ def callbacks_radioitems(
         return columns
 
     @callback(
-        Output('filtering_store', 'data', allow_duplicate=True),
-        Input("legend_group_switch", 'value'),
-        Input('filtering_store', 'data'),
+        Output("filtering_store", "data", allow_duplicate=True),
+        Input("legend_group_switch", "value"),
+        Input("filtering_store", "data"),
         prevent_initial_call=True
     )
     def update_filtering_store_2(
@@ -763,11 +763,11 @@ def callbacks_radioitems(
         return filtering
 
     @callback(
-        Output('filtering_store', 'data', allow_duplicate=True),
-        Output({'type': 'switch', 'index': ALL}, 'value'),
-        Input({'type': 'radioitems', 'index': ALL}, 'value'),
-        Input({'type': 'switch', 'index': ALL}, 'value'),
-        Input('filtering_store', 'data'),
+        Output("filtering_store", "data", allow_duplicate=True),
+        Output({"type": "switch", "index": ALL}, "value"),
+        Input({"type": "radioitems", "index": ALL}, "value"),
+        Input({"type": "switch", "index": ALL}, "value"),
+        Input("filtering_store", "data"),
         prevent_initial_call=True
     )
     def update_filtering_store(
@@ -786,10 +786,10 @@ def callbacks_radioitems(
         """
         try:
             selection = {}
-            for index, key in enumerate(filtering['y_axis_data'][1:]):
+            for index, key in enumerate(filtering["y_axis_data"][1:]):
                 selection[key] = (
-                    f'y{radioitems_values[index]}'
-                    if radioitems_values[index] > 1 else 'y')
+                    f"y{radioitems_values[index]}"
+                    if radioitems_values[index] > 1 else "y")
             filtering.update({"y_axis_selection": selection})
 
             def update_list(original_list):
@@ -813,7 +813,7 @@ def callbacks_radioitems(
                     switch = [list(state) for state in unzipped][1]
 
             side = {}
-            for index, key in enumerate(filtering['y_axis_data'][1:]):
+            for index, key in enumerate(filtering["y_axis_data"][1:]):
                 side[key] = switch[index]
             filtering.update({"y_axis_side": side})
 
@@ -822,8 +822,8 @@ def callbacks_radioitems(
             return filtering, no_update
 
     @callback(
-        Output({'type': 'label side', 'index': MATCH}, 'children'),
-        Input({'type': 'switch', 'index': MATCH}, 'value'),
+        Output({"type": "label side", "index": MATCH}, "children"),
+        Input({"type": "switch", "index": MATCH}, "value"),
         prevent_initial_call=True
     )
     def update_side_label(switch: bool) -> str:
@@ -835,7 +835,7 @@ def callbacks_radioitems(
         Returns:
             The updated label text ('Right' or 'Left').
         """
-        return 'Right' if switch else 'Left'
+        return "Right" if switch else "Left"
 
 
 def make_input_groups_column(
@@ -875,8 +875,8 @@ def make_input_groups_column(
     ], xs=12, md=md, className="mb-1 d-flex flex-column")
 
     @callback(
-        Output(input_id, 'style'),
-        Input(theme_trigger_id, 'data'),
+        Output(input_id, "style"),
+        Input(theme_trigger_id, "data"),
     )
     def update_input_styles(theme_switch: bool) -> Dict[str, str]:
         """
@@ -889,8 +889,8 @@ def make_input_groups_column(
             Dict[str, str]: A dictionary of CSS styles for the input.
         """
         input_style = {
-            'background-color': '#eee' if theme_switch else '#555',
-            'color': '#555' if theme_switch else '#eee'
+            "background-color": "#eee" if theme_switch else "#555",
+            "color": "#555" if theme_switch else "#eee"
         }
         return input_style
 
