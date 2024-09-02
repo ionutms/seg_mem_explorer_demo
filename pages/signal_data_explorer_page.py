@@ -149,7 +149,7 @@ select_card = dbc.Card([
         dbc.Col([dbc.Row([
             dcu.make_input_groups_column(
                 label="repository name", input_id="repo_name",
-                value="seg_mem_explorer_demo", md=4,
+                value="demo_test_files", md=4,
                 theme_trigger_id="theme_switch_value_store"),
             dcu.make_input_groups_column(
                 label="repository path", input_id="repo_path",
