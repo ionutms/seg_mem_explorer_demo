@@ -27,7 +27,7 @@ for styling, component creation, and signal processing.
 Usage:
 1. Upload a CSV or ZIP file containing CSV data
 2. Use range sliders to select specific portions of the data
-3. Click 'View selected data' to update the visualization
+3. Click "View selected data" to update the visualization
 4. Interact with the generated plot for detailed data exploration
 5. Toggle between light and dark themes as needed
 
@@ -41,8 +41,6 @@ Note: This module is part of a larger application and relies on custom utility
 functions and components defined in separate modules.
 """
 
-import io
-import zipfile
 import base64
 
 from typing import Any, Dict, List, Tuple
@@ -56,8 +54,8 @@ import pages.utils.style_utils as styles
 import pages.utils.dash_component_utils as dcu
 import pages.utils.signal_processing_utils as spu
 
-link_name = __name__.rsplit('.', maxsplit=1)[-1].replace('_page', '').title()
-module_name = __name__.rsplit('.', maxsplit=1)[-1]
+link_name = __name__.rsplit(".", maxsplit=1)[-1].replace("_page", "").title()
+module_name = __name__.rsplit(".", maxsplit=1)[-1]
 
 register_page(__name__, name=link_name, order=2)
 
@@ -104,7 +102,7 @@ usage_steps = [
 
 
 MAIN_DIV_CHILDREN = [
-    dbc.Row([dbc.Col([dcc.Link('Go back Home', href='/')])]),
+    dbc.Row([dbc.Col([dcc.Link("Go back Home", href="/")])]),
     dbc.Row([dbc.Col([html.H3(
         f"{link_name.replace('_', ' ')}", style=styles.heading_3_style)])]),
     dbc.Row([dcu.app_description(TITLE, ABOUT, features, usage_steps)])]
@@ -116,8 +114,8 @@ layout = dbc.Container([
 
 select_card = dbc.Card([
     dbc.Row([
-        dcc.Store(id='repo_info_store', data={}),
-        dcc.Store(id=f'{module_name}_contents_store'),
+        dcc.Store(id="repo_info_store", data={}),
+        dcc.Store(id=f"{module_name}_contents_store"),
 
         dbc.Col([dbc.Row([
             dcu.make_input_groups_column(
@@ -143,7 +141,7 @@ select_card = dbc.Card([
             dbc.Col([
                 dbc.Button(
                     "Search Files", id="search_files_button",
-                    className="w-100", color='secondary'),
+                    className="w-100", color="secondary"),
                 dbc.Select(
                     id=f"{module_name}_file_select",
                     placeholder="No files ...",
@@ -154,23 +152,23 @@ select_card = dbc.Card([
     ], className="g-0 align-items-center justify-content-center"),
 
     dbc.Row([dbc.Col([html.Div(
-        id='status_div', className=styles.CENTER_CONTENT_CLASS)], width=12)
+        id="status_div", className=styles.CENTER_CONTENT_CLASS)], width=12)
     ], className="g-0 align-items-center justify-content-center")
 
 ], body=True, style={
-    'background-color': 'transparent', 'borderWidth': '1px', 'padding': '2px',
-    'borderColor': '#808080', 'borderStyle': 'dashed', 'borderRadius': '10px',
+    "background-color": "transparent", "borderWidth": "1px", "padding": "2px",
+    "borderColor": "#808080", "borderStyle": "dashed", "borderRadius": "10px",
 })
 
 
-file_upload_component = dcc.Upload(id=f'{module_name}_upload', children=[
+file_upload_component = dcc.Upload(id=f"{module_name}_upload", children=[
     dbc.Row([dbc.Col(html.Div([
         "Drag and Drop or ", html.A("Select a zip with csv file(s)")
     ], className="text-center"),
         className="d-flex align-items-center justify-content-center",
         style={"height": "100%"})], className="h-100")], style={
-    'height': '76px', 'borderWidth': '1px', 'borderStyle': 'dashed',
-    'borderColor': '#808080', 'borderRadius': '10px', 'textAlign': 'center'
+    "height": "76px", "borderWidth": "1px", "borderStyle": "dashed",
+    "borderColor": "#808080", "borderRadius": "10px", "textAlign": "center"
 }, multiple=False)
 
 
@@ -182,35 +180,35 @@ file_upload_row = dbc.Row([
     dbc.Col([file_upload_component, html.Hr()])],
     className="g-3 align-items-center justify-content-center")
 
-file_selection_row = dbc.Row(id=f'{module_name}_files_row', children=[
+file_selection_row = dbc.Row(id=f"{module_name}_files_row", children=[
     dcu.labeled_counter_trio(
-        f'{module_name}_files', '0 files detected',
+        f"{module_name}_files", "0 files detected",
         limits={"min_count": 1, "max_count": 2}),
     dcu.labeled_range_slider(
-        f'{module_name}_files', "Select which files to explore", [1])])
+        f"{module_name}_files", "Select which files to explore", [1])])
 
-frames_selection_row = dbc.Row(id=f'{module_name}_frames_row', children=[
+frames_selection_row = dbc.Row(id=f"{module_name}_frames_row", children=[
     dcu.labeled_counter_trio(
-        f'{module_name}_frames', '0 frames detected',
+        f"{module_name}_frames", "0 frames detected",
         limits={"min_count": 1, "max_count": 2}),
     dcu.labeled_range_slider(
-        f'{module_name}_frames', "Select which frames to explore", [1])])
+        f"{module_name}_frames", "Select which frames to explore", [1])])
 
-records_selection_row = dbc.Row(id=f'{module_name}_records_row', children=[
+records_selection_row = dbc.Row(id=f"{module_name}_records_row", children=[
     dcu.labeled_counter_quintet(
-        id_section=f'{module_name}_records',
+        id_section=f"{module_name}_records",
         label="0 records per-frame detected", default_count=1,
         limits={"min_count": 1, "max_count": 2}),
     dcu.labeled_range_slider(
-        f'{module_name}_records',
+        f"{module_name}_records",
         "Select a minimum number of records per-frame to explore", [0, 1], 0)])
 
-data_sets_selection_row = dbc.Row(id=f'{module_name}_data_sets_row', children=[
+data_sets_selection_row = dbc.Row(id=f"{module_name}_data_sets_row", children=[
     dcu.labeled_counter_trio(
-        f'{module_name}_data_sets', '0 data sets detected',
+        f"{module_name}_data_sets", "0 data sets detected",
         limits={"min_count": 2, "max_count": 3}, default_count=2),
     dcu.labeled_range_slider(
-        f'{module_name}_data_sets', "Select which data sets to explore", [1])])
+        f"{module_name}_data_sets", "Select which data sets to explore", [1])])
 
 radioitems_row = dbc.Row([
     dbc.Col([dbc.Row(id="radioitems_row")], xs=12, md=9),
@@ -243,14 +241,14 @@ radioitems_row = dbc.Row([
 selection_row = dbc.Row([dbc.Col([dcc.Loading([
     file_selection_row, frames_selection_row, records_selection_row,
     data_sets_selection_row, radioitems_row], delay_show=2000), html.Hr()
-])], id='selection_row', style={'display': 'none'})
+])], id="selection_row", style={"display": "none"})
 
 graph_row = dbc.Row([dbc.Col([
-    dcc.Store('filtering_store', data={}),
+    dcc.Store("filtering_store", data={}),
     dcc.Loading([dcc.Graph(id=f"{module_name}_data_graph")]),
-    html.Hr()], id="graph_column", style={'display': 'none'})])
+    html.Hr()], id="graph_column", style={"display": "none"})])
 
-output = dbc.Row([dbc.Col([html.Div(id='output-data-upload')])])
+output = dbc.Row([dbc.Col([html.Div(id="output-data-upload")])])
 
 
 MAIN_DIV_CHILDREN.extend([
@@ -258,12 +256,12 @@ MAIN_DIV_CHILDREN.extend([
 
 
 @callback(
-    Output('repo_info_store', 'data'),
-    Input('search_files_button', 'n_clicks'),
-    Input('repo_api', 'value'),
-    Input('repo_owner', 'value'),
-    Input('repo_name', 'value'),
-    Input('repo_path', 'value'),
+    Output("repo_info_store", "data"),
+    Input("search_files_button", "n_clicks"),
+    Input("repo_api", "value"),
+    Input("repo_owner", "value"),
+    Input("repo_name", "value"),
+    Input("repo_path", "value"),
 )
 def store_repo_info(
     n_clicks: int,
@@ -275,13 +273,13 @@ def store_repo_info(
     """
     Store repository information in the repo_info_store.
 
-    This callback is triggered when the 'Search Files' button is clicked.
+    This callback is triggered when the "Search Files" button is clicked.
     It collects the current values of the repository API, owner, name, and
     path inputs and stores them in a dictionary.
 
     Args:
         n_clicks (int):
-            Number of times the 'Search Files' button has been clicked.
+            Number of times the "Search Files" button has been clicked.
         api (str): The base URL of the GitHub API.
         owner (str): The owner of the GitHub repository.
         name (str): The name of the GitHub repository.
@@ -296,7 +294,7 @@ def store_repo_info(
     """
     if n_clicks is not None and n_clicks > 1:
         raise PreventUpdate
-    return {'api': api, 'owner': owner, 'name': name, 'path': path}
+    return {"api": api, "owner": owner, "name": name, "path": path}
 
 
 @callback(
@@ -305,7 +303,7 @@ def store_repo_info(
     Output(f"{module_name}_file_select", "disabled"),
     Output("status_div", "children"),
     Input("search_files_button", "n_clicks"),
-    State('repo_info_store', 'data'),
+    State("repo_info_store", "data"),
     prevent_initial_call=True
 )
 def update_github_files_dropdown(
@@ -315,13 +313,13 @@ def update_github_files_dropdown(
     """
     Update the file selection dropdown with files from the GitHub repository.
 
-    This callback is triggered when the 'Search Files' button is clicked. It
+    This callback is triggered when the "Search Files" button is clicked. It
     uses the repository information stored in repo_info_store to fetch the
     list of files from the specified GitHub repository path.
 
     Args:
         n_clicks (int):
-            Number of times the 'Search Files' button has been clicked.
+            Number of times the "Search Files" button has been clicked.
         repo_info (Dict[str, str]):
             A dictionary containing the repository information.
 
@@ -336,10 +334,10 @@ def update_github_files_dropdown(
     if n_clicks is None or not repo_info:
         raise PreventUpdate
 
-    repo_api = repo_info.get('api', '')
-    repo_owner = repo_info.get('owner', '')
-    repo_name = repo_info.get('name', '')
-    repo_path = repo_info.get('path', '')
+    repo_api = repo_info.get("api", "")
+    repo_owner = repo_info.get("owner", "")
+    repo_name = repo_info.get("name", "")
+    repo_path = repo_info.get("path", "")
 
     url = f"{repo_api}/{repo_owner}/{repo_name}/{repo_path}"
 
@@ -347,7 +345,7 @@ def update_github_files_dropdown(
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         file_names_list = [
-            item['name'] for item in response.json() if item['type'] == 'file'
+            item["name"] for item in response.json() if item["type"] == "file"
         ]
         options = [{"label": file, "value": file} for file in file_names_list]
         return (
@@ -363,7 +361,7 @@ def update_github_files_dropdown(
 
 @callback(
     Output(f"{module_name}_file_select", "style"),
-    Input('theme_switch_value_store', 'data'),
+    Input("theme_switch_value_store", "data"),
 )
 def update_theme_styles(theme_switch):
     """
@@ -382,34 +380,34 @@ def update_theme_styles(theme_switch):
             search_files_button, and status_div.
     """
 
-    text_color = '#555' if theme_switch else '#eee'
-    bg_color = '#eee' if theme_switch else '#555'
+    text_color = "#555" if theme_switch else "#eee"
+    bg_color = "#eee" if theme_switch else "#555"
 
     file_select_style = {
-        'background-color': bg_color,
-        'color': text_color,
+        "background-color": bg_color,
+        "color": text_color,
     }
     return file_select_style
 
 
 @callback(
-    Output(f'{module_name}_contents_store', 'data'),
-    Input(f'{module_name}_upload', 'contents'),
-    State(f'{module_name}_upload', 'filename')
+    Output(f"{module_name}_contents_store", "data"),
+    Input(f"{module_name}_upload", "contents"),
+    State(f"{module_name}_upload", "filename")
 )
 def store_uploaded_file(contents, filename):
     """TODO"""
     if contents is not None:
-        if filename.endswith('.zip'):
-            return {'filename': filename, 'content': contents}
+        if filename.endswith(".zip"):
+            return {"filename": filename, "content": contents}
     return no_update
 
 
 @callback(
-    Output(f'{module_name}_contents_store', 'data', allow_duplicate=True),
+    Output(f"{module_name}_contents_store", "data", allow_duplicate=True),
     Output("status_div", "children", allow_duplicate=True),
     Input(f"{module_name}_file_select", "value"),
-    State('repo_info_store', 'data'),
+    State("repo_info_store", "data"),
     prevent_initial_call=True
 )
 def store_selected_file(
@@ -433,10 +431,10 @@ def store_selected_file(
     if not selected_file or not repo_info:
         raise PreventUpdate
 
-    github_repository_api = repo_info.get('api', '')
-    repo_owner = repo_info.get('owner', '')
-    repo_name = repo_info.get('name', '')
-    repo_path = repo_info.get('path', '')
+    github_repository_api = repo_info.get("api", "")
+    repo_owner = repo_info.get("owner", "")
+    repo_name = repo_info.get("name", "")
+    repo_path = repo_info.get("path", "")
 
     url = (f"{github_repository_api}/{repo_owner}/{repo_name}/"
            f"{repo_path}/{selected_file}")
@@ -446,83 +444,43 @@ def store_selected_file(
         response.raise_for_status()
         file_data = response.json()
 
-        download_url = file_data['download_url']
+        download_url = file_data["download_url"]
         zip_response = requests.get(download_url, timeout=10)
         zip_response.raise_for_status()
 
-        file_content = base64.b64encode(zip_response.content).decode('utf-8')
+        file_content = base64.b64encode(zip_response.content).decode("utf-8")
 
         return (
-            {'filename': selected_file, 'content': file_content},
+            {"filename": selected_file, "content": file_content},
             f"File '{selected_file}' has been stored.")
     except requests.RequestException as error:
         return None, f"Error fetching the file: {str(error)}"
 
 
-@callback(
-    Output("status_div", "children", allow_duplicate=True),
-    Input(f'{module_name}_contents_store', 'data'),
-    prevent_initial_call=True
-)
-def count_csv_files(file_data: Dict[str, Any]) -> str:
-    """
-    Count the number of CSV files in the stored ZIP file.
-
-    This callback is triggered when the f'{module_name}_contents_store')
-    is updated. It counts the number of CSV files in the stored ZIP file.
-
-    Args:
-        file_data (Dict[str, Any]): File content and metadata dictionary.
-
-    Returns:
-        str: Status message with CSV file count or error message.
-    """
-    if not file_data:
-        return "No file data available."
-
-    try:
-        file_content = base64.b64decode(file_data['content'])
-    except base64.binascii.Error:
-        return "Error: Invalid file content encoding."
-
-    try:
-        with zipfile.ZipFile(io.BytesIO(file_content)) as zip_file:
-            csv_count = sum(
-                1 for file in zip_file.namelist()
-                if file.lower().endswith('.csv'))
-    except zipfile.BadZipFile:
-        return "Error: The file is not a valid ZIP archive."
-    except IOError:
-        return "Error: Unable to read the file content."
-
-    return (f"The selected ZIP file '{file_data['filename']}' contains "
-            f"{csv_count} CSV file(s).")
-
+dcu.callback_update_store_at_upload(
+    f"{module_name}_files", f"{module_name}_contents_store",
+    "filtering_store", spu.count_csv_files_from_zip)
 
 dcu.callback_update_store_at_upload(
-    f'{module_name}_files', f'{module_name}_contents_store',
-    'filtering_store', spu.count_csv_files_from_zip)
+    f"{module_name}_frames", f"{module_name}_contents_store",
+    "filtering_store", dcu.extract_info_from_zip_as_int, "FastFrame Count")
 
 dcu.callback_update_store_at_upload(
-    f'{module_name}_frames', f'{module_name}_contents_store',
-    'filtering_store', dcu.extract_info_from_zip_as_int, "FastFrame Count")
+    f"{module_name}_records", f"{module_name}_contents_store",
+    "filtering_store", dcu.extract_info_from_zip_as_int, "Record Length")
 
 dcu.callback_update_store_at_upload(
-    f'{module_name}_records', f'{module_name}_contents_store',
-    'filtering_store', dcu.extract_info_from_zip_as_int, "Record Length")
-
-dcu.callback_update_store_at_upload(
-    f'{module_name}_data_sets', f'{module_name}_contents_store',
-    'filtering_store', spu.extract_data_frame_from_zip_contents)
+    f"{module_name}_data_sets", f"{module_name}_contents_store",
+    "filtering_store", spu.extract_data_frame_from_zip_contents)
 
 
-dcu.callbacks_radioitems(f'{module_name}_data_sets', "radioitems_row")
+dcu.callbacks_radioitems(f"{module_name}_data_sets", "radioitems_row")
 
 
 @callback(
-    Output('group_legend_card', 'style'),
-    Input(f"{module_name}_data_sets_range_slider", 'value'),
-    State('group_legend_card', 'style'),
+    Output("group_legend_card", "style"),
+    Input(f"{module_name}_data_sets_range_slider", "value"),
+    State("group_legend_card", "style"),
     prevent_initial_call=True
 )
 def set_group_legend_card_style(
@@ -530,19 +488,19 @@ def set_group_legend_card_style(
     style_state
 ):
     """TODO"""
-    style_state['display'] = '' if len(slider_value) > 2 else 'none'
+    style_state["display"] = "" if len(slider_value) > 2 else "none"
     return style_state
 
 
 @callback(
-    Output('filtering_store', 'data'),
-    Input(f"{module_name}_files_range_slider", 'value'),
-    Input(f"{module_name}_frames_range_slider", 'value'),
-    Input(f"{module_name}_records_range_slider", 'value'),
-    Input(f"{module_name}_data_sets_range_slider", 'value'),
-    Input(f"{module_name}_records_range_slider", 'max'),
-    State(f"{module_name}_data_sets_range_slider", 'marks'),
-    Input(f'{module_name}_contents_store', 'data'),
+    Output("filtering_store", "data"),
+    Input(f"{module_name}_files_range_slider", "value"),
+    Input(f"{module_name}_frames_range_slider", "value"),
+    Input(f"{module_name}_records_range_slider", "value"),
+    Input(f"{module_name}_data_sets_range_slider", "value"),
+    Input(f"{module_name}_records_range_slider", "max"),
+    State(f"{module_name}_data_sets_range_slider", "marks"),
+    Input(f"{module_name}_contents_store", "data"),
     prevent_initial_call=True
 )
 def update_files_filtering_store_with_slider_values(
@@ -570,20 +528,20 @@ def update_files_filtering_store_with_slider_values(
         Updated filtering dictionary or no_update if file is not a ZIP.
     """
     try:
-        filename = select_contents['filename']
-        contents = select_contents['content']
+        filename = select_contents["filename"]
+        contents = select_contents["content"]
 
         units_info = spu.extract_info_from_zip(
             contents, ["Horizontal Units", "Vertical Units"])
 
-        if filename.lower().endswith('.zip'):
+        if filename.lower().endswith(".zip"):
             horizontal_units, vertical_units = units_info.values()
             filtering = {
                 "files_to_keep": [file - 1 for file in files],
                 "frames_to_keep": [frame - 1 for frame in frames],
-                "x_axis_data": marks[f'{value[0]}'],
+                "x_axis_data": marks[f"{value[0]}"],
                 "y_axis_data":
-                    [marks[f'{position}'] for position in value[1:]],
+                    [marks[f"{position}"] for position in value[1:]],
                 "records_slice": records_range,
                 "records_max": records_max,
                 "Horizontal Units": horizontal_units,
@@ -597,9 +555,9 @@ def update_files_filtering_store_with_slider_values(
 
 
 @callback(
-    Output('selection_row', 'style'),
-    Output("graph_column", 'style', allow_duplicate=True),
-    Input(f'{module_name}_upload', 'filename'),
+    Output("selection_row", "style"),
+    Output("graph_column", "style", allow_duplicate=True),
+    Input(f"{module_name}_upload", "filename"),
     Input(f"{module_name}_file_select", "value"),
     prevent_initial_call=True
 )
@@ -610,23 +568,23 @@ def toggle_file_selection_visibility(
     """
     TODO
     """
-    if ctx.triggered_id == f'{module_name}_upload':
-        if upload_filename.lower().endswith('.zip'):
-            return {'display': ''}, {'display': 'none'}
+    if ctx.triggered_id == f"{module_name}_upload":
+        if upload_filename.lower().endswith(".zip"):
+            return {"display": ""}, {"display": "none"}
 
-    if select_filename.lower().endswith('.zip'):
-        return {'display': ''}, {'display': 'none'}
+    if select_filename.lower().endswith(".zip"):
+        return {"display": ""}, {"display": "none"}
 
-    return {'display': 'none'}, {'display': 'none'}
+    return {"display": "none"}, {"display": "none"}
 
 
 @callback(
-    Output(f"{module_name}_data_graph", 'figure'),
-    Output("graph_column", 'style'),
+    Output(f"{module_name}_data_graph", "figure"),
+    Output("graph_column", "style"),
     Input("view_data_button", "n_clicks"),
-    Input('theme_switch_value_store', 'data'),
-    State(f'{module_name}_contents_store', 'data'),
-    State('filtering_store', 'data'),
+    Input("theme_switch_value_store", "data"),
+    State(f"{module_name}_contents_store", "data"),
+    State("filtering_store", "data"),
     prevent_initial_call=True
 )
 def update_graph_with_uploaded_file(
@@ -653,15 +611,15 @@ def update_graph_with_uploaded_file(
             If no file is uploaded or the file type is not supported.
     """
     try:
-        filename = select_contents['filename']
-        contents = select_contents['content']
+        filename = select_contents["filename"]
+        contents = select_contents["content"]
 
-        file_extension = filename.lower().split('.')[-1]
+        file_extension = filename.lower().split(".")[-1]
 
-        if file_extension == 'zip':
+        if file_extension == "zip":
             figure = spu.plot_selected_zip_contents(
                 contents, filename, filtering, theme_switch)
-            return figure, {'display': ''}
+            return figure, {"display": ""}
     except TypeError:
         return no_update, no_update
 
@@ -669,21 +627,21 @@ def update_graph_with_uploaded_file(
 
 
 dcu.callback_update_range_slider_max_and_label(
-    f'{module_name}_files', f'{module_name}_contents_store')
-dcu.callback_labeled_counter_trio(f'{module_name}_files')
-dcu.callback_update_range_slider_value(f'{module_name}_files')
+    f"{module_name}_files", f"{module_name}_contents_store")
+dcu.callback_labeled_counter_trio(f"{module_name}_files")
+dcu.callback_update_range_slider_value(f"{module_name}_files")
 
 dcu.callback_update_range_slider_max_and_label(
-    f'{module_name}_frames', f'{module_name}_contents_store')
-dcu.callback_labeled_counter_trio(f'{module_name}_frames')
-dcu.callback_update_range_slider_value(f'{module_name}_frames')
+    f"{module_name}_frames", f"{module_name}_contents_store")
+dcu.callback_labeled_counter_trio(f"{module_name}_frames")
+dcu.callback_update_range_slider_value(f"{module_name}_frames")
 
 dcu.callback_update_range_slider_max_and_label(
-    f'{module_name}_records', f'{module_name}_contents_store')
-dcu.callback_labeled_counter_quintet(f'{module_name}_records', resolution=1)
-dcu.callback_update_range_slider_pushable_and_value(f'{module_name}_records')
+    f"{module_name}_records", f"{module_name}_contents_store")
+dcu.callback_labeled_counter_quintet(f"{module_name}_records", resolution=1)
+dcu.callback_update_range_slider_pushable_and_value(f"{module_name}_records")
 
 dcu.callback_update_range_slider_max_and_label(
-    f'{module_name}_data_sets', f'{module_name}_contents_store', reset_value=2)
-dcu.callback_labeled_counter_trio(f'{module_name}_data_sets')
-dcu.callback_update_range_slider_value(f'{module_name}_data_sets', 0)
+    f"{module_name}_data_sets", f"{module_name}_contents_store", reset_value=2)
+dcu.callback_labeled_counter_trio(f"{module_name}_data_sets")
+dcu.callback_update_range_slider_value(f"{module_name}_data_sets", 0)
