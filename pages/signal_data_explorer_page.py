@@ -413,7 +413,24 @@ def update_theme_styles(theme_switch):
     State(f"{module_name}_upload", "filename")
 )
 def store_uploaded_file(contents, filename):
-    """TODO"""
+    """
+    Store the contents of an uploaded file.
+
+    This function is called when a file is uploaded through the interface.
+    It checks if the file is a ZIP file and stores its contents and filename
+    if it is. For other file types, it returns without updating.
+
+    Args:
+        contents (str):
+            The contents of the uploaded file, typically in base64 encoded
+            format.
+        filename (str): The name of the uploaded file.
+
+    Returns:
+        dict: A dictionary containing the filename and content of the uploaded
+              ZIP file.
+        dash.no_update: If no file is uploaded or the file is not a ZIP file.
+    """
     if contents is not None:
         if filename.endswith(".zip"):
             return {"filename": filename, "content": contents}
